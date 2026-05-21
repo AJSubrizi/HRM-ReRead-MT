@@ -127,12 +127,34 @@ Seed: 7
 Observation: training loss decreased from 3.2868 to 0.1697
 ```
 
+Example smoke run:
+
+```text
+epoch=1 loss=3.2868
+epoch=2 loss=3.0140
+epoch=3 loss=2.5746
+epoch=4 loss=2.0696
+epoch=5 loss=1.5648
+epoch=6 loss=1.1072
+epoch=7 loss=0.7317
+epoch=8 loss=0.4569
+epoch=9 loss=0.2774
+epoch=10 loss=0.1697
+```
+
 Reproduce it locally:
 
 ```bash
 python3 examples/make_synthetic_math.py --output data/synthetic_math_100.jsonl --rows 100
 hrm-reread-train --data data/synthetic_math_100.jsonl --epochs 10 --hidden-size 128 --seed 7
 ```
+
+## Current Limitations
+
+- This is not a full HRM implementation.
+- No benchmark claims are made yet.
+- The current model is character-level and intended only as a smoke-test scaffold.
+- Teacher text augmentation is implemented; teacher-logit and hidden-state distillation are future work.
 
 ## Development
 
