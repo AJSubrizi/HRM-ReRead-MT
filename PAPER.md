@@ -101,7 +101,7 @@ We welcome compute sponsorships, collaborations, or joint experiments.
 
 ---
 
-**Repository**: https://github.com/[your-username]/HRM-ReRead-MT (create this repo and push the files)
+**Repository**: https://github.com/AJSubrizi/HRM-ReRead-MT (create this repo and push the files)
 
 **License**: MIT
 
