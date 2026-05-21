@@ -1,0 +1,13 @@
+name: tiny_math
+description: Synthetic math QA configuration for early trainer experiments.
+data: data/tiny_math_augmented.jsonl
+teacher:
+  provider: deepseek
+  model_env: DEEPSEEK_MODEL
+model:
+  hidden_size: 128
+  max_length: 128
+training:
+  epochs: 10
+  learning_rate: 0.001
+  seed: 7

@@ -16,6 +16,13 @@ multiple passes while carrying forward a high-level latent memory.
 This repository currently provides a mathematical formulation and a small executable reference scaffold.
 It does not yet provide full-scale empirical validation or a production HRM training stack.
 
+## Scope Note
+
+This is a minimal executable reference implementation of the memory/consolidation mechanism, not a
+benchmarked HRM model. The included tiny character-level trainer is useful for verifying data flow,
+latent memory reuse, and consolidation-loss plumbing. It should not be interpreted as evidence of
+reasoning capability or benchmark performance.
+
 ## 1. Introduction
 
 Large language models are powerful but expensive to train and adapt. Recurrent and hierarchical

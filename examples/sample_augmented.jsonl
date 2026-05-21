@@ -1,0 +1,3 @@
+{"prompt": "Solve 2 + 2 and explain the reasoning.", "teacher_response": "2 + 2 combines two pairs, so the answer is 4."}
+{"prompt": "Solve 7 + 5 and explain the reasoning.", "teacher_response": "Start at 7 and count 5 more: 8, 9, 10, 11, 12. The answer is 12."}
+{"prompt": "A box has 3 red balls and 4 blue balls. How many balls are there?", "teacher_response": "Add the red and blue balls: 3 + 4 = 7 total balls."}

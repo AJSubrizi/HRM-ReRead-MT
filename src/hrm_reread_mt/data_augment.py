@@ -51,7 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True, help="Input JSONL path.")
     parser.add_argument("--output", type=Path, required=True, help="Output JSONL path.")
-    parser.add_argument("--limit", type=int, default=None, help="Optional max rows for smoke tests.")
+    parser.add_argument(
+        "--limit", type=int, default=None, help="Optional max rows for smoke tests."
+    )
     return parser
 
 

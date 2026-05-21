@@ -34,7 +34,7 @@ class DeepSeekTeacherClient:
         api_key: Optional[str] = None,
         *,
         base_url: Optional[str] = None,
-        model: str = "deepseek-v4-pro",
+        model: Optional[str] = None,
         timeout: float = 120.0,
     ) -> None:
         load_dotenv()
@@ -42,10 +42,10 @@ class DeepSeekTeacherClient:
         if not self.api_key:
             raise TeacherClientError("DEEPSEEK_API_KEY is not set.")
 
-        self.base_url = (base_url or os.getenv("DEEPSEEK_BASE_URL") or "https://api.deepseek.com").rstrip(
-            "/"
-        )
-        self.model = model
+        self.base_url = (
+            base_url or os.getenv("DEEPSEEK_BASE_URL") or "https://api.deepseek.com"
+        ).rstrip("/")
+        self.model = model or os.getenv("DEEPSEEK_MODEL") or "deepseek-chat"
         self.timeout = timeout
 
     def complete(
@@ -55,7 +55,7 @@ class DeepSeekTeacherClient:
         system_prompt: str = "You are a careful teacher. Improve the answer and explain the reasoning.",
         temperature: float = 0.2,
         max_tokens: int = 2048,
-        reasoning_effort: str = "high",
+        reasoning_effort: Optional[str] = None,
     ) -> TeacherResponse:
         payload: Dict[str, Any] = {
             "model": self.model,
@@ -65,8 +65,9 @@ class DeepSeekTeacherClient:
             ],
             "temperature": temperature,
             "max_tokens": max_tokens,
-            "reasoning_effort": reasoning_effort,
         }
+        if reasoning_effort:
+            payload["reasoning_effort"] = reasoning_effort
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
