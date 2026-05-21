@@ -25,7 +25,7 @@ This repository contains:
 ## Paper
 
 📄 **Full Paper**: [PAPER.md](PAPER.md)  
-📑 **Compiled PDF**: [paper.pdf](paper.pdf) (LaTeX source also included)
+
 
 **Title**:  
 HRM-ReRead-MT: Hierarchical Re-Reading with Multi-Teacher Latent Consolidation for Data-Efficient LLM Training
