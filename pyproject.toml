@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hrm-reread-mt"
+version = "0.1.0"
+description = "Reference scaffolding for hierarchical re-reading with teacher-guided latent consolidation."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Antonio J. Subrizi" }]
+dependencies = [
+  "numpy>=1.26",
+  "python-dotenv>=1.0",
+  "requests>=2.31",
+  "torch>=2.2",
+  "tqdm>=4.66",
+  "urllib3<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.4",
+]
+
+[project.scripts]
+hrm-reread-augment = "hrm_reread_mt.data_augment:main"
+hrm-reread-train = "hrm_reread_mt.train_re_read_mt:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"

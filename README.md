@@ -1,69 +1,91 @@
-# HRM-ReRead-MT: Hierarchical Re-Reading with Multi-Teacher Latent Consolidation
+# HRM-ReRead-MT
 
-**A theoretical framework and complete implementation for data-efficient LLM training**
+Reference scaffolding for **Hierarchical Re-Reading with Multi-Teacher Latent Consolidation**.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![arXiv-like Paper](https://img.shields.io/badge/Paper-PDF-red)](https://github.com/AJSubrizi/HRM-ReRead-MT/blob/main/paper.pdf)
+This repository is a research proposal plus a small executable Python reference implementation. It does
+not yet contain a full 1B-parameter HRM training stack or empirical benchmark results.
 
-## Overview
+## What Is Here
 
-**HRM-ReRead-MT** extends the brain-inspired Hierarchical Reasoning Model (HRM-Text, Sapient Intelligence 2026) with two novel ideas:
+- `PAPER.md`: research note and mathematical formulation.
+- `src/hrm_reread_mt/teacher_utils.py`: OpenAI-compatible DeepSeek teacher client.
+- `src/hrm_reread_mt/data_augment.py`: JSONL augmentation CLI.
+- `src/hrm_reread_mt/train_re_read_mt.py`: laptop-sized reference loop showing latent memory across re-read epochs.
+- `tests/`: smoke tests for the reference loop.
 
-- **Iterative Re-Reading** with latent-state consolidation (inspired by human hippocampal replay)
-- **Multi-Teacher Distillation** directly from DeepSeek-V4-Pro into the high-level latent module
+## Install
 
-The goal is to achieve significantly higher reasoning depth and data-efficiency by letting a small model (1B parameters) **progressively consolidate knowledge** across multiple passes over high-quality data, guided by a much larger teacher.
+```bash
+git clone https://github.com/AJSubrizi/HRM-ReRead-MT.git
+cd HRM-ReRead-MT
+bash setup.sh
+```
 
-This repository contains:
-- Full theoretical paper (LaTeX + PDF)
-- Complete training pipeline (data augmentation + Re-Read training)
-- Ready-to-run scripts
-- All code needed to reproduce the framework
+Or manually:
 
-**Empirical validation is pending** (compute constraints). We release everything openly to invite collaboration and testing.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+```
 
-## Paper
+## Data Augmentation
 
-📄 **Full Paper**: [PAPER.md](PAPER.md)  
+Create a `.env` from `.env.example` and set `DEEPSEEK_API_KEY`.
 
+Input JSONL rows should contain one of `prompt`, `instruction`, or `question`:
 
-**Title**:  
-HRM-ReRead-MT: Hierarchical Re-Reading with Multi-Teacher Latent Consolidation for Data-Efficient LLM Training
+```json
+{"prompt": "Solve 2 + 2 and explain the reasoning."}
+```
 
-**Author**: Antonio J. Subrizi
+Run:
 
-## Key Features
+```bash
+hrm-reread-augment --input data/raw.jsonl --output data/augmented.jsonl --limit 10
+```
 
-- Hierarchical recurrent architecture (HRM backbone)
-- 5 progressive Re-Reading epochs with latent memory buffer
-- KL-divergence + hidden-state distillation from DeepSeek-V4-Pro
-- Theoretical projected gains of +15–26 points on major reasoning benchmarks
-- Fully documented and MIT licensed
+The output preserves each row and adds `teacher_response`.
 
-## Repository Structure
+## Reference Training Smoke Run
 
-HRM-ReRead-MT/
-├── PAPER.md                  # Full scientific paper (Markdown)
-├── paper.pdf                 # Compiled LaTeX version
-├── main.tex                  # LaTeX source
-├── LICENSE                   # MIT License
-├── README.md                 # This file
-├── HRM-Text/                 # Original HRM-Text repo (cloned)
-├── data_augment.py           # Augment dataset with DeepSeek-V4-Pro
-├── train_re_read_mt.py       # Core training loop (ReRead + distillation)
-├── teacher_utils.py          # Teacher API utilities
-├── setup.sh                  # One-click environment setup
-└── create_hrm_reread_mt.py   # Script that generated the whole package
+The included training command is intentionally tiny. It verifies the mechanics of:
 
-## Quick Start (for testing / collaboration)
+- repeated re-reading epochs,
+- a latent memory buffer,
+- prediction loss plus consolidation loss.
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/AJSubrizi/HRM-ReRead-MT.git
-   cd HRM-ReRead-MT
-   Get your DeepSeek API key and put it in .env
-   Run the full pipeline (data + training):
-   bash setup.sh
-python data_augment.py
-torchrun --nproc_per_node=8 train_re_read_mt.py   # (requires 8×H100 or equivalent)
-Note: Full training requires large GPU clusters. On consumer hardware you can run only the data augmentation step.
+```bash
+hrm-reread-train --data data/augmented.jsonl --epochs 5
+```
+
+For a no-API local smoke test:
+
+```bash
+mkdir -p data
+printf '{"prompt":"2+2?","teacher_response":"The answer is 4."}\n' > data/sample.jsonl
+hrm-reread-train --data data/sample.jsonl --epochs 2 --hidden-size 16
+```
+
+## Development
+
+```bash
+pytest
+ruff check .
+```
+
+## Roadmap
+
+- Add a real HRM/HRM-Text adapter once the target base implementation is selected.
+- Replace the character-level demo model with tokenizer-backed datasets.
+- Add teacher-logit distillation where provider responses expose logprobs or compatible logits.
+- Add experiment configs, checkpointing, evaluation scripts, and benchmark reporting.
+
+## Status
+
+Empirical validation is pending. Claims in `PAPER.md` should be read as hypotheses/projections until
+benchmarks are run and published.
+
+## License
+
+MIT.
